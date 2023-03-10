@@ -20,7 +20,7 @@ public class UserModel {
     @Column(name="user_id")
     private Long id;
 
-    @Column(name="user_email", unique = true, nullable = false)
+    @Column(name="user_email",  nullable = false)
 //    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
     private String email;
 
@@ -45,7 +45,7 @@ public class UserModel {
     @Column(name = "user_gender")
     private String userGender;
 
-    @Column(name = "user_contact", unique = true)
+    @Column(name = "user_contact")
     private String userContact;
 
     @Column(name = "user_about")

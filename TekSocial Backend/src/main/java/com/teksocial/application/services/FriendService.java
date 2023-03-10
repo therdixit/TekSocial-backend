@@ -7,14 +7,36 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FriendService {
     @Autowired
     private FriendRepository friendRepository;
-    public Friends saveFriend(Friends friends)
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    public Friends saveFriend(Long profileId)
     {
-        return friendRepository.save(friends);
+    	Friends newFriends = new Friends();
+    	  	
+    	Optional<UserModel> user = userRepository.findById(profileId);
+
+    	if (user.isPresent()) {
+    	    UserModel newUser = new UserModel();
+    	    UserModel existingUser = user.get();
+    	    newUser.setUserName(existingUser.getUserName());
+    	    newUser.setUserAbout(existingUser.getUserAbout());
+    	
+    	    newFriends.setId(profileId);
+    	    newFriends.setName(newUser.getUserName());
+    	    newFriends.setDetails(newUser.getUserAbout());
+    	    newFriends.setStatus(true);
+    	    
+    	}
+    	
+        return friendRepository.save(newFriends);
     }
     public List<Friends> getFriend()
     {

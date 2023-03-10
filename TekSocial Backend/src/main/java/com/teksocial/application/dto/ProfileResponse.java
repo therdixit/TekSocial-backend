@@ -18,4 +18,5 @@ public class ProfileResponse {
     private String state;
     private String userName;
     private String userAbout;
+    private String profilePic;
 }

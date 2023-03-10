@@ -18,5 +18,9 @@ public class GlobalUtilities {
     public static final String API_SUCCESS_STATUS = "success";
     public static final String API_FAILURE_STATUS = "error";
 
+    public static final String FRIEND_PENDING_REQUEST = "pending";
+
+    public static  final String FRIEND_ACCEPTED_REQUEST  = "accepted";
+
 
 }

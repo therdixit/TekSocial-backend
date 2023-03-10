@@ -8,7 +8,7 @@ public class Friends {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @Column(name = "name")
     private String name;
 
@@ -22,18 +22,18 @@ public class Friends {
 
     }
 
-    public Friends(int id, String name, String details, boolean status) {
+    public Friends(Long id, String name, String details, boolean status) {
         this.id = id;
         this.name = name;
         this.details = details;
         this.status = status;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

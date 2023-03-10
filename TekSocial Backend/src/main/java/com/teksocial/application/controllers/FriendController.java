@@ -12,11 +12,11 @@ import java.util.List;
 public class FriendController {
     @Autowired
     private FriendService friendService;
-    @PostMapping("/friends")
-    public Friends addFriend(@RequestBody Friends friends)
-    {
-        return friendService.saveFriend(friends);
-    }
+//    @PostMapping("/friends")
+//    public Friends addFriend(@RequestBody Friends friends)
+//    {
+//        return friendService.saveFriend(friends);
+//    }
 
     @GetMapping("/findfriend")
     public List<Friends> getFriends()
