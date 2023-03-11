@@ -17,13 +17,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class userController {
+	
     private AuthenticationManager authenticationManager;
+    
     @Autowired
     private Token token;
 
@@ -54,7 +58,6 @@ public class userController {
             }
 
             @PostMapping("/authenticate")
-
             public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws Exception {
                 try {
                     authenticate(authRequest.getEmail(), authRequest.getPassword());
@@ -62,13 +65,19 @@ public class userController {
                     e.printStackTrace();
                     throw new Exception("User not found");
                 }
-
-
                 jwtResponse jwt_new = new jwtResponse();
                 jwt_new.setStatus("success");
-
-
+                
                 UserDetails userDetails = this.user_service.loadUserByUsername(authRequest.getEmail());
+                Optional<User_Table> loggedUser = this.userRepo.findByEmail(authRequest.getEmail());
+                if (loggedUser.isPresent()) {
+                    Long userId = loggedUser.get().getUser_id();
+                    jwt_new.setId(userId);
+                } else {
+//                	throw new Exception("User not found");
+                	System.out.println("no user found");
+                }
+                
                 String jwt = token.generateToken(userDetails.getUsername());
                 System.out.println("Inside generateToken: " + jwt);
                 jwt_new.setJwtToken(jwt);
@@ -76,6 +85,7 @@ public class userController {
                 return ResponseEntity.ok(jwt_new);
             }
 
+            
             public void authenticate(String username, String password) throws Exception {
                 try {
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
@@ -83,6 +93,7 @@ public class userController {
                     System.out.println(e.toString());
                     throw new Exception("USER_DISABLED" + e.getMessage());
                 } catch (BadCredentialsException e) {
+                	System.out.println();
                     System.out.println(e.toString());
                     throw new Exception("INVALID_CREDENTIALS" + e.getMessage());
                 }
