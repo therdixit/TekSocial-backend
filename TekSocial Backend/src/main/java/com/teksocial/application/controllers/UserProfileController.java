@@ -193,6 +193,7 @@ public class UserProfileController {
             userRepository.save(userModel);
             uploadFileResponse.setStatus(GlobalUtilities.API_SUCCESS_STATUS);
             uploadFileResponse.setData(results.get("url").toString());
+            System.out.println("success");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(uploadFileResponse);
         }catch (Exception e){
             e.printStackTrace();
