@@ -1,0 +1,16 @@
+package com.socialserver.socialserver.repository;
+
+import com.socialserver.socialserver.modal.ChatMessage;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+
+    List<ChatMessage> findBySenderId(Long senderId);
+
+    List<ChatMessage> findByRecipientId(Long recipientId);
+
+}

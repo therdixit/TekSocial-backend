@@ -5,4 +5,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'social-chatapp'
+rootProject.name = 'socialserver'
