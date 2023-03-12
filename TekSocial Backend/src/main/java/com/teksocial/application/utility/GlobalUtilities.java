@@ -22,5 +22,9 @@ public class GlobalUtilities {
 
     public static  final String FRIEND_ACCEPTED_REQUEST  = "accepted";
 
+    public  static  final String MESSAGE_STATUS_DELIVERED = "delivered";
+
+    public  static  final String MESSAGE_STATUS_RECEIVED = "received";
+
 
 }

@@ -21,7 +21,6 @@ public class UserModel {
     private Long id;
 
     @Column(name="user_email",  nullable = false)
-//    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
     private String email;
 
     @Column(name="user_name")

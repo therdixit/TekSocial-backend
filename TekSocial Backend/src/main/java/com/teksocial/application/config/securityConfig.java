@@ -18,6 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +35,7 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private Token token;
+
 
 
 
@@ -55,9 +58,11 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
         protected void configure(HttpSecurity httpSecurity) throws Exception {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+
             httpSecurity
                     .csrf().disable()
-//                    .authorizeRequests().antMatchers("/authenticate", "/register").permitAll()
                     .authorizeRequests().antMatchers("/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
@@ -71,7 +76,18 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                     .exceptionHandling().authenticationEntryPoint(jwtEntryRequest).and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-            httpSecurity.cors();
+        config.addAllowedOrigin("http://localhost:8080/");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("OPTIONS");
+        config.addAllowedMethod("HEAD");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("PATCH");
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+            httpSecurity.cors().configurationSource(request -> config);
         }
 
 
