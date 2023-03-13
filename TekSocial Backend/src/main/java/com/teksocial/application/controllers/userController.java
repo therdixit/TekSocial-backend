@@ -1,10 +1,13 @@
 package com.teksocial.application.controllers;
+import com.teksocial.application.dto.RegisterResponse;
+import com.teksocial.application.repositories.UserRepository;
 import com.teksocial.application.repositories.User_Repo;
 import com.teksocial.application.services.AuthRequest;
 import com.teksocial.application.services.Token;
 import com.teksocial.application.services.jwtResponse;
 import com.teksocial.application.services.userService;
-import com.teksocial.application.models.User_Table;
+import com.teksocial.application.models.UserModel;
+import com.teksocial.application.utility.GlobalUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +34,12 @@ public class userController {
     
     @Autowired
     private Token token;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private userService user_service;
@@ -50,11 +60,24 @@ public class userController {
             }
 
             @PostMapping("/register")
-            public User_Table register(@RequestBody User_Table user) {
+            public ResponseEntity<?> register(@RequestBody UserModel user) {
 
-                User_Table userTable = user_service.register(user);
-                userRepo.save(userTable);
-                return userTable;
+                RegisterResponse registerResponse = new RegisterResponse();
+                Optional<UserModel> userInDB = userRepository.findByEmail(user.getEmail());
+                if(userInDB.isPresent())
+                {
+                    registerResponse.setStatus(GlobalUtilities.API_FAILURE_STATUS);
+                    registerResponse.setMessage("User is present in DB");
+                }
+                else {
+                        user.setPassword(passwordEncoder.encode(user.getPassword()));
+                        user.setConfirm_password(passwordEncoder.encode(user.getConfirm_password()));
+                        registerResponse.setStatus(GlobalUtilities.API_SUCCESS_STATUS);
+                        registerResponse.setMessage("User not present");
+                        userRepository.save(user);
+                }
+
+                return ResponseEntity.ok(registerResponse);
             }
 
             @PostMapping("/authenticate")
@@ -69,12 +92,11 @@ public class userController {
                 jwt_new.setStatus("success");
                 
                 UserDetails userDetails = this.user_service.loadUserByUsername(authRequest.getEmail());
-                Optional<User_Table> loggedUser = this.userRepo.findByEmail(authRequest.getEmail());
+                Optional<UserModel> loggedUser = this.userRepo.findByEmail(authRequest.getEmail());
                 if (loggedUser.isPresent()) {
-                    Long userId = loggedUser.get().getUser_id();
+                    Long userId = loggedUser.get().getId();
                     jwt_new.setId(userId);
                 } else {
-//                	throw new Exception("User not found");
                 	System.out.println("no user found");
                 }
                 

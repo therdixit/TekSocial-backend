@@ -27,6 +27,8 @@ public class ChatController {
     private ChatRoomService chatRoomService;
     @Autowired
     private ChatService chatService;
+    
+    
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatModel chatMessage) {
         System.out.println(chatMessage);
